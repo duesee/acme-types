@@ -27,10 +27,12 @@ pub struct Authorization {
     /// Authorization status
     pub status: AuthorizationStatus,
     /// Authorization expiration time
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub expires: Option<String>,
     /// Authorization challenge objects
     pub challenges: Vec<Challenge>,
     /// Present and true for authorizations for a domain name containing a wildcard
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub wildcard: Option<bool>,
 }
 
@@ -88,10 +90,13 @@ pub struct Challenge {
     /// Optional challenge token - this may or may not be present depending on the challenge type
     ///
     /// For more information, refer to [RFC 8555 § 8.1](https://datatracker.ietf.org/doc/html/rfc8555#section-8.1)
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub token: Option<String>,
     /// Time at which the challenge was validated
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub validated: Option<String>,
     /// Error(s) encountered during challenge validation
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub error: Option<super::Error>,
 }
 

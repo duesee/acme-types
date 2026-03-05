@@ -40,9 +40,8 @@ impl NewOrder {
 pub struct Order {
     /// Order status
     pub status: OrderStatus,
-    /// Order expiration time
-    pub expires: String,
-    /// Array of requested identifiers
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
+    pub expires: Option<String>,
     pub identifiers: Vec<super::Identifier>,
     /// Requested value for certificate's notBefore value
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
@@ -52,14 +51,12 @@ pub struct Order {
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     #[cfg_attr(feature = "json", serde(rename = "notAfter"))]
     pub not_after: Option<String>,
-    /// Error encountered during domain validation, certificate issuance, etc.
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub error: Option<String>,
-    /// Authorizations which need to be completed in order to finalize the order
-    pub authorizations: Option<String>,
-    /// URL to finalize order
+    pub authorizations: Vec<String>,
     pub finalize: String,
-    /// URL to retrieve certificate issued by ACME provider
-    pub certificate: String,
+    #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
+    pub certificate: Option<String>,
 }
 
 #[cfg(feature = "json")]

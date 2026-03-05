@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 pub struct NewAccount {
     /// Array of URLs that can be used by the ACME provider to contact the client
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
-    pub contact: Option<String>,
+    pub contact: Option<Vec<String>>,
     /// Confirmation client has agreed to the ACME provider's Terms of Service
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     #[cfg_attr(feature = "json", serde(rename = "termsOfServiceAgreed"))]
