@@ -119,12 +119,18 @@ impl Challenge {
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "json", derive(Serialize, Deserialize))]
 pub enum ChallengeStatus {
+    /// Challenge objects are created in the "pending" state.
     #[cfg_attr(feature = "json", serde(rename = "pending"))]
     Pending,
+    /// They transition to the "processing" state when the client responds to the challenge
+    /// (see Section 7.5.1) and the server begins attempting to validate that the client has
+    /// completed the challenge. Likewise, client requests for retries do not cause a state change.
     #[cfg_attr(feature = "json", serde(rename = "processing"))]
     Processing,
+    /// If validation is successful, the challenge moves to the "valid" state.
     #[cfg_attr(feature = "json", serde(rename = "valid"))]
     Valid,
+    /// If there is an error, the challenge moves to the "invalid" state.
     #[cfg_attr(feature = "json", serde(rename = "invalid"))]
     Invalid,
 }
@@ -149,16 +155,25 @@ pub enum ChallengeType {
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "json", derive(Serialize, Deserialize))]
 pub enum AuthorizationStatus {
+    /// Authorization objects are created in the "pending" state.
     #[cfg_attr(feature = "json", serde(rename = "pending"))]
     Pending,
-    #[cfg_attr(feature = "json", serde(rename = "expired"))]
-    Expired,
-    #[cfg_attr(feature = "json", serde(rename = "deactivated"))]
-    Deactivated,
-    #[cfg_attr(feature = "json", serde(rename = "revoked"))]
-    Revoked,
+    /// If one of the challenges listed in the authorization transitions to the "valid"
+    /// state, then the authorization also changes to the "valid" state.
     #[cfg_attr(feature = "json", serde(rename = "valid"))]
     Valid,
+    /// If the client attempts to fulfill a challenge and fails, or if there is
+    /// an error while the authorization is still pending, then the authorization
+    /// transitions to the "invalid" state.
     #[cfg_attr(feature = "json", serde(rename = "invalid"))]
     Invalid,
+    /// Once the authorization is in the "valid" state, it can expire ("expired"),
+    #[cfg_attr(feature = "json", serde(rename = "expired"))]
+    Expired,
+    /// be deactivated by the client ("deactivated", see Section 7.5.2),
+    #[cfg_attr(feature = "json", serde(rename = "deactivated"))]
+    Deactivated,
+    /// or revoked by the server ("revoked").
+    #[cfg_attr(feature = "json", serde(rename = "revoked"))]
+    Revoked,
 }

@@ -74,28 +74,30 @@ impl AccountUpdate {
     }
 }
 
-/// Defines an ACME account resource.
-///
-/// For more information, refer to [RFC 8555 § 7.1.2](https://datatracker.ietf.org/doc/html/rfc8555#section-7.1.2)
+/// An ACME account resource represents a set of metadata associated with an account.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "json", derive(Serialize, Deserialize))]
 pub struct Account {
-    /// ACME account status
+    /// Status of this account.
     pub status: AccountStatus,
-    /// Array of URLs that can be used by the ACME provider to contact the client
+    /// An array of URLs that the server can use to contact the client for issues related to this
+    /// account. For example, the server may wish to notify the client about server-initiated
+    /// revocation or certificate expiration. For information on supported URL schemes, see Section 7.3.
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub contact: Option<Vec<String>>,
-    /// If set to true, indicates that the ACME account has agreed to the ACME provider's Terms of Service
+    /// Including this field in a newAccount request, with a value of true, indicates the client's
+    /// agreement with the terms of service.  This field cannot be updated by the client.
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     #[cfg_attr(feature = "json", serde(rename = "termsOfServiceAgreed"))]
     pub terms_of_service_agreed: Option<bool>,
-    /// External account object
+    /// Including this field in a newAccount request indicates approval by the holder of an existing
+    /// non-ACME account to bind that account to this ACME account. This field is not updateable by
+    /// the client (see Section 7.3.4).
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     #[cfg_attr(feature = "json", serde(rename = "externalAccountBinding"))]
     pub external_account_binding: Option<super::JsonWebSignature>,
-    /// URL from which a list of orders submitted by the ACME account can be retrieved.
-    ///
-    /// For more information, refer to [RFC 8555 § 7.1.2.1](https://datatracker.ietf.org/doc/html/rfc8555#section-7.1.2.1)
+    /// A URL from which a list of orders submitted by this account can be fetched via a POST-as-GET
+    /// request, as described in Section 7.1.2.1.
     pub orders: String,
 }
 
@@ -141,10 +143,19 @@ impl AccountOrders {
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "json", derive(Serialize, Deserialize))]
 pub enum AccountStatus {
+    /// Account objects are created in the "valid" state, since no further
+    /// action is required to create an account after a successful newAccount
+    /// request.
     #[cfg_attr(feature = "json", serde(rename = "valid"))]
     Valid,
+    /// Deactivated by client.
+    ///
+    /// Should be used to indicate client-initiated deactivation.
     #[cfg_attr(feature = "json", serde(rename = "deactivated"))]
     Deactivated,
+    /// Revoked by server.
+    ///
+    /// Should be used to indicate server-initiated deactivation.
     #[cfg_attr(feature = "json", serde(rename = "revoked"))]
     Revoked,
 }

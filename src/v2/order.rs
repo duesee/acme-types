@@ -38,23 +38,44 @@ impl NewOrder {
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "json", derive(Serialize, Deserialize))]
 pub struct Order {
-    /// Order status
+    /// The status of this order.
     pub status: OrderStatus,
+    /// The timestamp after which the server will consider this order invalid,
+    /// encoded in the format specified in [RFC3339]. This field is REQUIRED for
+    /// objects with "pending" or "valid" in the status field.
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub expires: Option<String>,
+    /// An array of identifier objects that the order pertains to.
     pub identifiers: Vec<super::Identifier>,
-    /// Requested value for certificate's notBefore value
+    /// The requested value of the notBefore
+    /// field in the certificate, in the date format defined in [RFC3339].
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     #[cfg_attr(feature = "json", serde(rename = "notBefore"))]
     pub not_before: Option<String>,
-    /// Requested value for certificate's notAfter value
+    /// The requested value of the notAfter
+    /// field in the certificate, in the date format defined in [RFC3339].
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     #[cfg_attr(feature = "json", serde(rename = "notAfter"))]
     pub not_after: Option<String>,
+    /// The error that occurred while processing the order, if any.
+    /// This field is structured as a problem document [RFC7807].
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub error: Option<String>,
+    /// For pending orders, the authorizations that the client needs to complete before the
+    /// requested certificate can be issued (see Section 7.5), including
+    /// unexpired authorizations that the client has completed in the past
+    /// for identifiers specified in the order.  The authorizations
+    /// required are dictated by server policy; there may not be a 1:1
+    /// relationship between the order identifiers and the authorizations
+    /// required.  For final orders (in the "valid" or "invalid" state),
+    /// the authorizations that were completed.  Each entry is a URL from
+    /// which an authorization can be fetched with a POST-as-GET request.
     pub authorizations: Vec<String>,
+    /// A URL that a CSR must be POSTed to once all of the order's authorizations
+    /// are satisfied to finalize the order. The result of a successful finalization
+    /// will be the population of the certificate URL for the order.
     pub finalize: String,
+    /// A URL for the certificate that has been issued in response to this order.
     #[cfg_attr(feature = "json", serde(skip_serializing_if = "Option::is_none"))]
     pub certificate: Option<String>,
 }
@@ -102,14 +123,24 @@ impl OrderFinalize {
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "json", derive(Serialize, Deserialize))]
 pub enum OrderStatus {
+    /// Order objects are created in the "pending" state.
     #[cfg_attr(feature = "json", serde(rename = "pending"))]
     Pending,
+    /// Once all of the authorizations listed in the order object are in the "valid" state,
+    /// the order transitions to the "ready" state.
     #[cfg_attr(feature = "json", serde(rename = "ready"))]
     Ready,
+    /// The order moves to the "processing" state after the client submits a request to the order's
+    /// "finalize" URL and the CA begins the issuance process for the certificate.
     #[cfg_attr(feature = "json", serde(rename = "processing"))]
     Processing,
+    /// Once the certificate is issued, the order enters the "valid" state.
     #[cfg_attr(feature = "json", serde(rename = "valid"))]
     Valid,
+    /// If an error occurs at any of these stages, the order
+    /// moves to the "invalid" state.  The order also moves to the "invalid"
+    /// state if it expires or one of its authorizations enters a final state
+    /// other than "valid" ("expired", "revoked", or "deactivated").
     #[cfg_attr(feature = "json", serde(rename = "invalid"))]
     Invalid,
 }

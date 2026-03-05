@@ -5,17 +5,21 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "json", derive(Serialize, Deserialize))]
 pub struct Identifier {
-    /// Identifier type
+    /// The type of identifier.
     #[cfg_attr(feature = "json", serde(rename = "type"))]
     pub type_: IdentifierType,
-    /// Identifier value
+    /// The identifier itself.
     pub value: String,
 }
 
-/// Order and authorization identifier type values
+/// Order and authorization identifier types
+///
+/// The "ACME Identifier Types" registry lists the types of identifiers
+/// that can be present in ACME authorization objects.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "json", derive(Serialize, Deserialize))]
 pub enum IdentifierType {
+    /// RFC 8555.
     #[cfg_attr(feature = "json", serde(rename = "dns"))]
     Dns,
 }
