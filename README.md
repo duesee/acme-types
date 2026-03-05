@@ -1,3 +1,6 @@
+> [!NOTE]  
+> This is a hard fork of <https://crates.io/crates/acme-types> with minor fixes and improvements. We forked the project because the original repository appears to be unavailable, and I was unable to contact the author. The first commit reflects the original source. If you are the maintainer, please say so :-)
+
 This crate defines types for implementing ACME ([RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555)) providers and clients.
 
 - This crate does not include any HTTP library or provide any functionality (beyond support for de/serialization, as documented below) for interacting with an ACME client or provider, e.g. a server or client
