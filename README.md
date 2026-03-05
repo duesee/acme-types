@@ -1,8 +1,3 @@
-[![](https://roar.doom.fm/v1/badge.svg?title=crates.io&text=acme-types&font_size=120&text_bg_colour=%23e33b26&text_colour=%23fff)](https://crates.io/crates/acme-types)
-[![](https://roar.doom.fm/v1/badge.svg?title=docs.rs&text=latest&font_size=120&text_bg_colour=%23e33b26&text_colour=%23fff)](https://docs.rs/crate/acme-types/latest)
-
-# acme-types-rs
-
 This crate defines types for implementing ACME ([RFC 8555](https://datatracker.ietf.org/doc/html/rfc8555)) providers and clients.
 
 - This crate does not include any HTTP library or provide any functionality (beyond support for de/serialization, as documented below) for interacting with an ACME client or provider, e.g. a server or client
@@ -45,3 +40,15 @@ println!("{:#?}", directory);
 >>>     ),
 >>> }
 ```
+
+## Crate Features
+
+### JSON De/serialization (`json`)
+
+Serialization and deserialization to and from JSON is supported using the `serde` (and `serde_json`) crate(s). This integration is optional (feature `json`):
+
+```toml
+acme-types = { version = "*", features = ["json"] }
+```
+
+When this feature is enabled, `from_str` and `to_string` are implemented on top-level ACME objects and resources.
