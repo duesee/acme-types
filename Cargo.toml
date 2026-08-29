@@ -4,12 +4,8 @@ description = "Types for implementing ACME (RFC 8555) providers and clients"
 license = "CC0-1.0 OR Unlicense"
 version = "0.1.1"
 
-homepage = "https://git.doom.fm/citruspi/acme-types-rs"
-repository = "https://git.doom.fm/citruspi/acme-types-rs"
-
 keywords = ["acme", "rfc-8555"]
 categories = ["data-structures"]
-readme = "CRATE.md"
 
 edition = "2021"
 
